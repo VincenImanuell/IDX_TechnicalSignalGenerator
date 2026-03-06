@@ -4,8 +4,8 @@ from indicators.rsi import calculate_rsi
 from signals.signal_generator import moving_average_signal, rsi_signal, combined_signal
 
 print("IDX Technical Signal Generator")
-print("Metode: MA20/MA50 crossover + RSI14 (30/70)")
-print("Final signal menggabungkan MA dan RSI.")
+print("Method: MA20/MA50 crossover + RSI14 (30/70)")
+print("Final signal combines MA and RSI.")
 
 ticker = input("Stock ticker (BBCA, BBRI, etc): ")
 
