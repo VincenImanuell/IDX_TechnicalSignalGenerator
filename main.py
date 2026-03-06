@@ -1,7 +1,7 @@
 from utils.data_loader import load_stock_data
 from indicators.moving_average import calculate_ma
 from indicators.rsi import calculate_rsi
-from signals.signal_generator import moving_average_signal, rsi_signal, combined_signal
+from signals.signal_generator import moving_average_analysis, rsi_analysis, combined_analysis
 
 print("IDX Technical Signal Generator")
 print("Method: MA20/MA50 crossover + RSI14 (30/70)")
@@ -15,16 +15,13 @@ data["MA20"] = calculate_ma(data, 20)
 data["MA50"] = calculate_ma(data, 50)
 data["RSI14"] = calculate_rsi(data, 14)
 
-ma_sig = moving_average_signal(data)
-rsi_sig = rsi_signal(data)
-signal = combined_signal(data)
-
-latest_rsi = data["RSI14"].dropna()
-if latest_rsi.empty:
-    rsi_text = "N/A"
-else:
-    rsi_text = f"{float(latest_rsi.iloc[-1]):.2f}"
+ma_sig, ma_reason = moving_average_analysis(data)
+rsi_sig, rsi_reason = rsi_analysis(data)
+signal, final_reason = combined_analysis(data)
 
 print("MA Signal:", ma_sig)
-print("RSI Signal:", rsi_sig, f"(RSI14: {rsi_text})")
+print("MA Reason:", ma_reason)
+print("RSI Signal:", rsi_sig)
+print("RSI Reason:", rsi_reason)
 print("Trading Signal (MA + RSI):", signal)
+print("Final Reason:", final_reason)
