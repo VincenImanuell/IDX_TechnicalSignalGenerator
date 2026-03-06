@@ -1,6 +1,6 @@
 # IDX Technical Signal Generator
 
-Simple Python project to generate `BUY`, `SELL`, or `HOLD` signals for Indonesian stocks (IDX) using moving average crossover logic.
+Simple Python project to generate `BUY`, `SELL`, or `HOLD` signals for Indonesian stocks (IDX) using moving average crossover and RSI logic.
 
 ## Features
 - Downloads historical price data from Yahoo Finance via `yfinance`
@@ -8,10 +8,17 @@ Simple Python project to generate `BUY`, `SELL`, or `HOLD` signals for Indonesia
 - Calculates:
   - `MA20` (20-day moving average)
   - `MA50` (50-day moving average)
-- Generates signal:
+- `RSI14` (14-day Relative Strength Index)
+- Generates signals:
   - `BUY` when `MA20 > MA50`
   - `SELL` when `MA20 < MA50`
+  - `BUY` when `RSI14 < 30` (oversold)
+  - `SELL` when `RSI14 > 70` (overbought)
   - `HOLD` otherwise
+- Generates final signal (`MA + RSI`) with conflict handling:
+  - Same direction (`BUY`/`SELL`) -> follow that signal
+  - One indicator `HOLD` -> follow the other indicator
+  - Conflict (`BUY` vs `SELL`) -> `HOLD`
 
 ## Project Structure
 ```text
@@ -51,18 +58,28 @@ Input ticker without `.JK`, for example:
 Example output:
 ```text
 Stock ticker (BBCA, BBRI, etc): BBCA
-Trading Signal: HOLD
+MA Signal: BUY
+RSI Signal: HOLD (RSI14: 54.21)
+Trading Signal (MA + RSI): BUY
 ```
 
 ## Signal Logic
-The app computes moving averages on close prices:
+The app computes indicators on close prices:
 - `MA20 = rolling mean of Close over 20 days`
 - `MA50 = rolling mean of Close over 50 days`
+- `RSI14 = Relative Strength Index over 14 periods`
 
-Then it compares the latest valid values:
+Then it generates per-indicator signals:
 - `MA20 > MA50` -> `BUY`
 - `MA20 < MA50` -> `SELL`
-- equal or insufficient valid data -> `HOLD`
+- `RSI14 < 30` -> `BUY`
+- `RSI14 > 70` -> `SELL`
+- otherwise or insufficient valid data -> `HOLD`
+
+Final `Trading Signal (MA + RSI)`:
+- same MA and RSI direction -> `BUY`/`SELL`
+- if one side is `HOLD`, use the other side
+- opposite MA and RSI directions -> `HOLD`
 
 ## Notes
 - This project is for educational use, not financial advice.
