@@ -1,10 +1,16 @@
 def moving_average_signal(data):
-    latest = data.iloc[-1]
+    clean = data.dropna(subset=["MA20", "MA50"])
+    if clean.empty:
+        return "HOLD"
 
-    if latest["MA20"] > latest["MA50"]:
+    latest = clean.iloc[-1]
+    ma20 = float(latest["MA20"])
+    ma50 = float(latest["MA50"])
+
+    if ma20 > ma50:
         return "BUY"
 
-    elif latest["MA20"] < latest["MA50"]:
+    elif ma20 < ma50:
         return "SELL"
 
     return "HOLD"
