@@ -8,7 +8,7 @@ Simple Python project to generate `BUY`, `SELL`, or `HOLD` signals for Indonesia
 - Calculates:
   - `MA20` (20-day moving average)
   - `MA50` (50-day moving average)
-- `RSI14` (14-day Relative Strength Index)
+  - `RSI14` (14-day Relative Strength Index)
 - Generates signals:
   - `BUY` when `MA20 > MA50`
   - `SELL` when `MA20 < MA50`
@@ -19,6 +19,10 @@ Simple Python project to generate `BUY`, `SELL`, or `HOLD` signals for Indonesia
   - Same direction (`BUY`/`SELL`) -> follow that signal
   - One indicator `HOLD` -> follow the other indicator
   - Conflict (`BUY` vs `SELL`) -> `HOLD`
+- Provides explanations for each result:
+  - `MA Reason`
+  - `RSI Reason`
+  - `Final Reason`
 
 ## Project Structure
 ```text
@@ -26,6 +30,7 @@ IDX_TechnicalSignalGenerator/
 |-- main.py
 |-- indicators/
 |   `-- moving_average.py
+|   `-- rsi.py
 |-- signals/
 |   `-- signal_generator.py
 |-- utils/
@@ -57,10 +62,16 @@ Input ticker without `.JK`, for example:
 
 Example output:
 ```text
+IDX Technical Signal Generator
+Method: MA20/MA50 crossover + RSI14 (30/70)
+Final signal combines MA and RSI.
 Stock ticker (BBCA, BBRI, etc): BBCA
 MA Signal: BUY
-RSI Signal: HOLD (RSI14: 54.21)
+MA Reason: MA20 (9480.25) is above MA50 (9320.80).
+RSI Signal: HOLD
+RSI Reason: RSI14 (54.21) is between 30-70 (neutral).
 Trading Signal (MA + RSI): BUY
+Final Reason: RSI is neutral, following MA: BUY. MA20 (9480.25) is above MA50 (9320.80). RSI14 (54.21) is between 30-70 (neutral).
 ```
 
 ## Signal Logic
@@ -75,6 +86,8 @@ Then it generates per-indicator signals:
 - `RSI14 < 30` -> `BUY`
 - `RSI14 > 70` -> `SELL`
 - otherwise or insufficient valid data -> `HOLD`
+
+It also generates human-readable reasons from the latest indicator values.
 
 Final `Trading Signal (MA + RSI)`:
 - same MA and RSI direction -> `BUY`/`SELL`
